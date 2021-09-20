@@ -1,0 +1,29 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system/fluid";
+    object      initAlphaFieldsDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+field   "alpha.liquid";
+type   sphere;
+origin (4.2e-4 2.5e-3 0);
+radius 3e-4;  //5time now of cell dimension
+scale -1;
+//type plane;
+//origin (0 0 0);
+//normal  (1 0 0);
+
+
+// ************************************************************************* //***************************************************************** //

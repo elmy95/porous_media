@@ -1,0 +1,112 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  plus                                  |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 1e-6;
+
+HFluid 0;
+WFluid 0;
+
+HSolid 1;
+WSolid 5000;
+
+
+channelH #calc "$HFluid + $HSolid";//229;
+channelW #calc "$WFluid + $WSolid";//114.5;
+channelL 12000;
+
+nx 200;//550;
+ny 84;//100;
+nz 1;//50;
+
+vertices
+(
+    (0 0 0)
+    ($channelL 0 0)
+    ($channelL $channelW 0)
+    (0 $channelW 0)
+    (0 0 $channelH)
+    ($channelL 0 $channelH)
+    ($channelL $channelW $channelH)
+    (0 $channelW $channelH)
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) ($nx $ny $nz)
+    simpleGrading (1 1 1)
+);
+
+patches
+(
+    empty frontAndBack
+    (
+	      (4 5 6 7)
+        (0 1 2 3)
+    )
+    wall faceWall
+    (
+      (0 4 7 3)
+    )
+    patch outlet
+    (
+        (2 6 5 1)
+    )
+    symmetryPlane sym1
+    (
+      (1 5 4 0)
+    )
+    symmetryPlane sym2
+    (
+      (3 7 6 2)
+    )
+/*
+    wall wall_bottom
+    (
+        (1 5 4 0)
+    )
+
+    symmetry wall_symm
+    (
+        (4 5 6 7)
+    )
+
+    wall plexi
+    (
+        (2 6 7 3)
+    )
+
+    symmetry symm
+    (
+        (0 1 2 3)
+    )
+
+    patch outlet
+    (
+        (2 6 5 1)
+    )
+
+    patch inlet
+    (
+        (0 4 7 3)
+    )
+
+    empty frontAndBack
+    (
+    )
+*/
+);
+
+// ************************************************************************* //

@@ -1,0 +1,28 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# generate mesh
+runApplication blockMesh
+runApplication topoSet
+#restore0Dir
+cp -r 0.orig 0
+runApplication splitMeshRegions -cellZonesOnly -overwrite
+runApplication snappyHexMesh -overwrite
+#runApplication setFields -region fluid
+#runApplication setFieldfromTable -region fluid
+#runApplication setAlphaField -region fluid
+#runApplication setFields -region fluid
+runApplication decomposePar -allRegions
+mpirun -np 6 icoBoilingFoam -parallel
+#
+
+# run solver
+#runApplication $(getApplication)
+#runParallel $(getApplication)
+#sbatch ./Allrun.slurm
+#sbatch ./Allrun.slurm
+
+#------------------------------------------------------------------------------

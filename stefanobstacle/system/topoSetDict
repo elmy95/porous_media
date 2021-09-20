@@ -1,0 +1,173 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+HFluid 0;
+WFluid 0;
+
+HSolid 1e-6;
+WSolid 200e-6;
+
+
+channelH #calc "$HFluid + $HSolid";
+channelW #calc "$WFluid + $WSolid";
+channelL 1000e-6;
+rad 1.15e-3;  //radius of bars
+xp 2.0e-3;    //point of starts of bars -x
+yp1 2.5e-3;   //point of start of bars -y
+dx 2.857e-3;  //distance in x of the bars
+dy 2.857e-3;  //distance in y of the
+actions
+(
+      //bars
+      {
+          name    barsCellSet;
+          type    cellSet;
+          action  new;
+          source  cylinderToCell;
+          sourceInfo
+          {
+            p1    (#calc "0 + $xp" #calc "0 + $yp1" 0.0);
+            p2    (#calc "0 + $xp" #calc "0 + $yp1" $channelH);
+            radius 1.05e-3;
+          }
+      }
+
+      {
+          name    barsCellSet;
+          type    cellSet;
+          action  add;
+          source  cylinderToCell;
+          sourceInfo
+          {
+            p1    (#calc "$dx + $xp" #calc "0 + $yp1" 0.0);
+            p2    (#calc "$dx + $xp" #calc "0 + $yp1" $channelH);
+            radius 1.05e-3;
+          }
+      }
+
+      {
+          name    barsCellSet;
+          type    cellSet;
+          action  add;
+          source  cylinderToCell;
+          sourceInfo
+          {
+            p1    (#calc "$dx*2 + $xp" #calc "0 + $yp1" 0.0);
+            p2    (#calc "$dx*2 + $xp" #calc "0 + $yp1" $channelH);
+            radius 1.05e-3;
+          }
+      }
+
+      {
+          name    barsCellSet;
+          type    cellSet;
+          action  add;
+          source  cylinderToCell;
+          sourceInfo
+          {
+            p1    (#calc "$dx*3 + $xp" #calc "0 + $yp1" 0.0);
+            p2    (#calc "$dx*3 + $xp" #calc "0 + $yp1" $channelH);
+            radius 1.05e-3;
+          }
+      }
+//////////////////////////////////////////////////////////////////////////
+    /*  {
+          name    barsCellSet;
+          type    cellSet;
+          action  add;
+          source  cylinderToCell;
+          sourceInfo
+          {
+            p1    (#calc "0 + $xp" #calc "$dy + $yp1" 0.0);
+            p2    (#calc "0 + $xp" #calc "$dy + $yp1" $channelH);
+            radius 1.05e-3;
+          }
+      }
+      {
+          name    barsCellSet;
+          type    cellSet;
+          action  add;
+          source  cylinderToCell;
+          sourceInfo
+          {
+            p1    (#calc "$dx + $xp" #calc "$dy + $yp1" 0.0);
+            p2    (#calc "$dx + $xp" #calc "$dy + $yp1" $channelH);
+            radius 1.05e-3;
+          }
+      }
+      {
+          name    barsCellSet;
+          type    cellSet;
+          action  add;
+          source  cylinderToCell;
+          sourceInfo
+          {
+            p1    (#calc "$dx*2 + $xp" #calc "$dy + $yp1" 0.0);
+            p2    (#calc "$dx*2 + $xp" #calc "$dy + $yp1" $channelH);
+            radius 1.05e-3;
+          }
+      }
+
+      {
+          name    barsCellSet;
+          type    cellSet;
+          action  add;
+          source  cylinderToCell;
+          sourceInfo
+          {
+            p1    (#calc "$dx*3 + $xp" #calc "$dy + $yp1" 0.0);
+            p2    (#calc "$dx*3 + $xp" #calc "$dy + $yp1" $channelH);
+            radius 1.05e-3;
+          }
+      }
+*/
+      {
+          name    solid;
+          type    cellZoneSet;
+          action  new;
+          source  setToCellZone;
+          set     barsCellSet;
+      }
+      //fluid
+      {
+        name    fluidCellSet;
+        type    cellSet;
+        action  new;
+        source  cellToCell;
+        set     barsCellSet;
+      }
+      {
+          name fluidCellSet;
+          type cellSet;
+          action invert;
+      }
+      {
+          name    fluid;
+          type    cellZoneSet;
+          action  new;
+          source  setToCellZone;
+          set     fluidCellSet;
+      }
+
+
+
+
+);
+
+
+
+// ************************************************************************* //
